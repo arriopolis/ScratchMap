@@ -1,0 +1,6 @@
+Takeout/
+data/parsed_locations.json
+data/cleaned_locations.json
+extra_locations.txt
+clean_rules.txt
+scratchmap.png

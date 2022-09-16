@@ -1,0 +1,13 @@
+src_filename=Takeout/Locatiegeschiedenis/Records.json
+parsed_filename=data/parsed_locations.json
+cleaned_filename=data/cleaned_locations.json
+clean_rules_filename=clean_rules.txt
+extra_locations_filename=extra_locations.txt
+outlier_multiplier=50
+mask_height=1000
+mask_width=2000
+kernel_size=15
+cloud_size=100
+cloud_factor=-.02
+cloud_num=4000
+img_filename=scratchmap.png

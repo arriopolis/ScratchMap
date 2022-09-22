@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import shapefile, json
+import datetime
 
 # Read the config file
 print("Reading the config file...")
@@ -81,6 +82,7 @@ for borders in countries:
         ax.fill(*zip(*border), color = (.5,.3,.3))
         ax.plot(*zip(*border), color = 'k')
 ax.imshow(overlay, extent = (-180,180,-90,90), zorder = 10)
+ax.text(179, -89, 'Latest update: ' + datetime.date.today().strftime("%B %Y").capitalize(), ha = 'right', va = 'bottom', color = 'darkgray', zorder = 10)
 
 print("Saving the image...")
 plt.savefig(CONFIG['img_filename'], bbox_inches='tight')

@@ -47,7 +47,7 @@ overlay = np.zeros((h,w,4))
 cloud_s = int(CONFIG['cloud_size'])
 cloud_f = float(CONFIG['cloud_factor'])
 overlay = np.zeros((h,w,4))
-overlay[:,:,:4] = (.6,.6,.6,1.)
+overlay[:,:,:4] = (.7,.7,.7,1.)
 for _ in range(int(CONFIG['cloud_num'])):
     x = np.random.randint(0,w-1)
     y = np.random.randint(0,h-1)
@@ -58,7 +58,7 @@ for _ in range(int(CONFIG['cloud_num'])):
     ymax = min(h-1,y+cloud_s)
     xmin = max(0,x-cloud_s)
     xmax = min(w-1,x+cloud_s)
-    overlay[ymin:ymax+1,xmin:xmax+1,:] += (offset[cloud_s-(y-ymin):cloud_s+(ymax-y+1),cloud_s-(x-xmin):cloud_s+(xmax-x+1)])[:,:,np.newaxis] * np.array([1,1,1,.25])[np.newaxis,np.newaxis,:]
+    overlay[ymin:ymax+1,xmin:xmax+1,:] += (offset[cloud_s-(y-ymin):cloud_s+(ymax-y+1),cloud_s-(x-xmin):cloud_s+(xmax-x+1)])[:,:,np.newaxis] * np.array([1,1,1,.5])[np.newaxis,np.newaxis,:]
 
 for x,y in xys:
     cx,cy = int((x+180)*w)//360, int((90-y)*h)//180
@@ -82,7 +82,7 @@ for borders in countries:
         ax.fill(*zip(*border), color = (.5,.3,.3))
         ax.plot(*zip(*border), color = 'k')
 ax.imshow(overlay, extent = (-180,180,-90,90), zorder = 10)
-ax.text(179, -89, 'Latest update: ' + datetime.date.today().strftime("%B %Y").capitalize(), ha = 'right', va = 'bottom', color = 'darkgray', zorder = 10)
+ax.text(179, -89, 'Latest update: ' + datetime.date.today().strftime("%B %Y").capitalize(), ha = 'right', va = 'bottom', color = 'lightgray', zorder = 10)
 
 print("Saving the image...")
 plt.savefig(CONFIG['img_filename'], bbox_inches='tight')

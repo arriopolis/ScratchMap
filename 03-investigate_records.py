@@ -67,8 +67,8 @@ for (_,start),((year,month),end) in zip(months_idxs[:-1],months_idxs[1:]):
         ts.append(t)
         iss.append(i)
 
-    xs = [x/1e7 for x in xs]
-    ys = [y/1e7 for y in ys]
+    xs = [x for x in xs]
+    ys = [y for y in ys]
     min_xs, max_xs = min(xs), max(xs)
     min_ys, max_ys = min(ys), max(ys)
     width = max_xs - min_xs

@@ -14,10 +14,10 @@ with open('config.txt') as f:
         k,v = s.strip().split('=')
         CONFIG[k.strip()] = v.strip()
 
+RULES = {}
 if not os.path.exists(CONFIG['clean_rules_filename']): print("No cleaning rules file found.")
 else:
     print("Reading the cleaning rules in", CONFIG['clean_rules_filename'], "...")
-    RULES = {}
     with open(CONFIG['clean_rules_filename']) as f:
         for line in f:
             s = line.split('#')[0].strip()
@@ -90,9 +90,9 @@ else:
                     for i in range(1,num_interpol+1):
                         newy = lasty + i*(y-lasty)/(num_interpol+1)
                         newx = lastx + i*(x-lastx)/(num_interpol+1)
-                        cleaned_locations.append((int(newy*1e7), int(newx*1e7), (year,month,day,hour,minute,second)))
+                        cleaned_locations.append((newy, newx, (year,month,day,hour,minute,second)))
                         ctr += 1
-                cleaned_locations.append((int(y*1e7), int(x*1e7), (year,month,day,hour,minute,second)))
+                cleaned_locations.append((y, x, (year,month,day,hour,minute,second)))
                 ctr += 1
                 num_interpol = 0
                 lasty,lastx = y,x

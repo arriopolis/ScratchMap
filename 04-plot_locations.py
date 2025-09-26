@@ -22,8 +22,8 @@ with open(filename) as f:
 # Parse the locations
 xys = set()
 for lat, lon, t in locations:
-    xys.add((lon//1e5, lat//1e5))
-xys = [(x/100,y/100) for x,y in xys]
+    xys.add((lon, lat))
+xys = [(x,y) for x,y in xys]
 
 # Parse the borders
 countries = []

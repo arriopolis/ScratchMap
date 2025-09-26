@@ -1,4 +1,4 @@
-src_filename=Takeout/Locatiegeschiedenis/Records.json
+src_filename=Takeout/Timeline.json
 parsed_filename=data/parsed_locations.json
 cleaned_filename=data/cleaned_locations.json
 clean_rules_filename=clean_rules.txt

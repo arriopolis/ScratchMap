@@ -4,7 +4,7 @@ import shapefile, json
 import datetime
 
 def mercator_projection(x,y):
-    return x, np.log(np.tan(np.pi/4 + y/360*np.pi))/np.pi*130
+    return x, np.log(np.tan(np.pi/4 + y/360*np.pi))/np.pi*180
 
 # Read the config file
 print("Reading the config file...")
@@ -42,7 +42,11 @@ with shapefile.Reader('data/country_borders/ne_10m_admin_0_countries') as shp:
 
 # Define the mask
 print("Calculating the mask...")
-h,w = int(CONFIG['mask_height']),int(CONFIG['mask_width'])
+img_xmin,img_ymin = mercator_projection(float(CONFIG['xmin']), float(CONFIG['ymin']))
+img_xmax,img_ymax = mercator_projection(float(CONFIG['xmax']), float(CONFIG['ymax']))
+h = int((img_ymax - img_ymin) * float(CONFIG['size']))
+w = int((img_xmax - img_xmin) * float(CONFIG['size']))
+
 s = int(CONFIG['kernel_size'])
 overlay = np.zeros((h,w,4))
 
@@ -64,9 +68,11 @@ for _ in range(int(CONFIG['cloud_num'])):
     overlay[ymin:ymax+1,xmin:xmax+1,:] += (offset[cloud_s-(y-ymin):cloud_s+(ymax-y+1),cloud_s-(x-xmin):cloud_s+(xmax-x+1)])[:,:,np.newaxis] * np.array([1,1,1,.5])[np.newaxis,np.newaxis,:]
 
 for x,y in xys:
-    cx,cy = int((x+180)*w)//360, int((90-y)*h)//180
+    cx,cy = int((x-img_xmin)*w/(img_xmax - img_xmin)), int((img_ymax-y)*h/(img_ymax - img_ymin))
     xmin,xmax = max(cx-s,0),min(cx+s+1,w)
+    if xmin >= w or xmax < 0: continue
     ymin,ymax = max(cy-s,0),min(cy+s+1,h)
+    if ymin >= h or ymax < 0: continue
     xoffl,xoffr = max(xmin-cx+s,0),max(cx+s+1-xmax,0)
     yofft,yoffb = max(ymin-cy+s,0),max(cy+s+1-ymax,0)
     mask = np.sqrt(np.linspace(-1,1,2*s+1)[:,np.newaxis]**2 + np.linspace(-1,1,2*s+1)[np.newaxis,:]**2)
@@ -74,7 +80,7 @@ for x,y in xys:
 
 # Plot the picture
 print("Generating the picture...")
-fig = plt.figure(figsize = (16,8))
+fig = plt.figure(figsize = (w/100,h/100))
 fig.patch.set_facecolor('lightblue')
 fig.subplots_adjust(left=0, right=1, top=1, bottom=0)
 ax = fig.gca()
@@ -84,8 +90,8 @@ for borders in countries:
     for border in borders:
         ax.fill(*zip(*border), color = (.5,.3,.3))
         ax.plot(*zip(*border), color = 'k')
-ax.imshow(overlay, extent = (-180,180,-90,90), zorder = 10)
-ax.text(179, -89, 'Latest update: ' + datetime.date.today().strftime("%B %Y").capitalize(), ha = 'right', va = 'bottom', color = 'lightgray', zorder = 10)
+ax.imshow(overlay, extent = (img_xmin,img_xmax,img_ymin,img_ymax), zorder = 10)
+ax.text(img_xmax - .01*(img_xmax - img_xmin), img_ymin + .01 * (img_ymax - img_ymin), 'Latest update: ' + datetime.date.today().strftime("%B %Y").capitalize(), ha = 'right', va = 'bottom', color = 'lightgray', zorder = 10)
 
 print("Saving the image...")
 plt.savefig(CONFIG['img_filename'], bbox_inches='tight')

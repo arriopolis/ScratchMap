@@ -3,6 +3,9 @@ import matplotlib.pyplot as plt
 import shapefile, json
 import datetime
 
+def mercator_projection(x,y):
+    return x, np.log(np.tan(np.pi/4 + y/360*np.pi))/np.pi*130
+
 # Read the config file
 print("Reading the config file...")
 CONFIG = {}
@@ -23,7 +26,7 @@ with open(filename) as f:
 xys = set()
 for lat, lon, t in locations:
     xys.add((lon, lat))
-xys = [(x,y) for x,y in xys]
+xys = [mercator_projection(x,y) for x,y in xys]
 
 # Parse the borders
 countries = []
@@ -33,7 +36,7 @@ with shapefile.Reader('data/country_borders/ne_10m_admin_0_countries') as shp:
         borders = []
         parts = list(shape.parts) + [len(shape.points)]
         for sp,ep in zip(parts[:-1], parts[1:]):
-            contour = shape.points[sp:ep]
+            contour = list(map(lambda x : mercator_projection(*x), shape.points[sp:ep]))
             borders.append(contour)
         countries.append(borders)
 

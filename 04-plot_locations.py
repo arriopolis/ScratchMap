@@ -2,14 +2,19 @@ import numpy as np
 import matplotlib.pyplot as plt
 import shapefile, json
 import datetime
+import sys
 
 def mercator_projection(x,y):
     return x, np.log(np.tan(np.pi/4 + y/360*np.pi))/np.pi*180
 
+config_filename = 'config.txt'
+if len(sys.argv) >= 2:
+    config_filename = sys.argv[1]
+
 # Read the config file
-print("Reading the config file...")
+print("Reading the config file from", config_filename, "...")
 CONFIG = {}
-with open('config.txt') as f:
+with open(config_filename) as f:
     for line in f:
         s = line.split('#')[0]
         if '=' not in s: continue
@@ -75,7 +80,7 @@ for x,y in xys:
     if ymin >= h or ymax < 0: continue
     xoffl,xoffr = max(xmin-cx+s,0),max(cx+s+1-xmax,0)
     yofft,yoffb = max(ymin-cy+s,0),max(cy+s+1-ymax,0)
-    mask = np.sqrt(np.linspace(-1,1,2*s+1)[:,np.newaxis]**2 + np.linspace(-1,1,2*s+1)[np.newaxis,:]**2)
+    mask = 1. / (1. + np.exp(1.5 - 5.*(np.linspace(-1,1,2*s+1)[:,np.newaxis]**2 + np.linspace(-1,1,2*s+1)[np.newaxis,:]**2)))
     overlay[ymin:ymax,xmin:xmax,3] = np.minimum(overlay[ymin:ymax,xmin:xmax,3], mask[yofft:2*s+1-yoffb,xoffl:2*s+1-xoffr])
 
 # Plot the picture

@@ -1,0 +1,16 @@
+src_filename=Takeout/Timeline.json
+parsed_filename=data/parsed_locations.json
+cleaned_filename=data/cleaned_locations.json
+clean_rules_filename=clean_rules.txt
+extra_locations_filename=extra_locations.txt
+outlier_multiplier=50
+xmin=-130
+xmax=-65
+ymin=23
+ymax=50
+size=20
+kernel_size=30
+cloud_size=60
+cloud_factor=-.02
+cloud_num=4000
+img_filename=scratchmap-usa.png
